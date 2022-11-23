@@ -1,4 +1,4 @@
-# MongoDB migration advisor for Autonomous MongoDB API
+# MongoDB compatibility advisor for Autonomous MongoDB API
 
 ## Introduction
 
