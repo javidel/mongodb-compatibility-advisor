@@ -1,5 +1,12 @@
-# MongoDB migration advisor for MongoDB API
+# MongoDB migration advisor for Autonomous MongoDB API
 
 ## Introduction
 
-This workshop walks you through the steps to get started using the **Oracle Autonomous Data Warehouse Database (ADW)**. You will provision a new database in just a few minutes and you will create a new user.
+This tool helps you to identify which MongoDB queries are supported when using the Oracle Autonomous MongoDB API. This tool generates a report which indicates the porcentage of compatibilty.
+
+
+## How to use it
+
+```
+python3 advisor.py --file mongod.log
+```
