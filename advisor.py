@@ -1,8 +1,20 @@
 import argparse
 import sys
 
-supported_keywords = ["$gt","$lt","$and","$not","$or","$ne"]   
-not_supported_keywords=["$set","$avg","$count","$first","$geonear","$group","$limit","$lookup","$match","$max","$merge","$min","$out","$project","$redact","$skip","$sort","$sum","$unionwith","$unset","$unwind","$cmp","$abs"]
+supported_keywords = ["$gt","$gte","$lt","$and","$not","$or","$nor","$ne","$eq","$in","$lte","$nin","$exists","$type","$regex","$text","$near","$nearSphere","$elemMatch","$size","$natural","$inc","$min","$max",
+                        "$rename","$set","$unset","$addToSet","$pop","$pull","$push","$pullAll","$each","$position","$sort","$bit","$count","$limit","$match","$skip"]   
+not_supported_keywords=["$expr","$jsonSchema","$mod","$geoIntersects","$geoWithin","$box","$center","$centerSphere","$maxDistance","$minDistance","$polygon","$all","$bitsAllClear","$bitsAllSet","$bitsANyClear",
+                        "$bitsAnySet","$elemMatch","$slice","$rand","$currentData","$mul","$setOnInsert","$abs","$accumulator","$acos","$acosh","$addFields","$bucket","$bucketAuto","$changeStream","$collStats"
+                        ,"$currentOp","$densify","$documents","$facet","$fill","$geoNear","$graphLookup","$group","$indexStats","$lookup","$merge","$out","$project","$redact","$replaceRoot","$replaceWith","$sample"
+                        ,"$search","$searchMeta","$set","$setWindowFields","$sortByCount","$unionWith","$unset","$unwind","$add","$allElementsTrue","$anyElementTrue","$arrayElemAt","$arrayToObject","$asin","$asinh"
+                        ,"$atan","$atan2","$atanh","$avg","$binarySize","$bottom","$bottomN","$bsonSize","$ceil","$cmp","$concat","$concatArrays","$cond","$convert","$cosh","$cosh","$count","$covariancePop","$covarianceSamp"
+                        ,"$dateAdd","$dateDiff","$dateFromParts","$dateFromString","$datesubtract","$dateToParts","$dateToString","$dateTrunc","$dayOfMonth","$dayOfWeek","$dayOfYear","$degreesToRadians","$denseRank"
+                        ,"$derivative","$divide","$documentNumber","$exp","$expMovingAvg","$filter","$first","$firstN","$floor","$function","$getField","$hour","$ifNull","$indexOfArray","$indexOfBytes","$indexOfCP"
+                        ,"$integral","$isArray","$isNumber","$isoDayOfWeek","$isoWeek","$isoWeekYear","$last","$lastN","$let","$linearFill","$literal","$ln","$log","$log10","$ltrim","$map","$maxN","$mergeObjects"
+                        ,"$meta","$minN","$millisecond","$minute","$month","$multiply","$objectToArray","$pow","$radiansToDegrees","$range","$rank","$reduce","$regexFind","$regexFindAll","$regexMatch","$replaceOne"
+                        ,"$replaceAll","$reverseArray","$round","$rtrim","$sampleRate","$second","$setDifference","$setEquals","$setField","$setIntersection","$setIsSubset","$setUnion","$shift","$size","$sin","$sinh"
+                        ,"$sortArray","$split","$sqrt","$stsDevPop","$stsDevSamp","$strLenBytes","$strcasecmp","$strLenCP","$substr","$substrCP","$subtract","$sum","$switch","$tan","$tanh","$toBool","$toDate"
+                        ,"$toDecimal","$toDouble","$toInt","$toLong","$toObjectId","$top","$topN","$toString","$toLower","$toUpper","$tsIncrement","$tsSecond","$trim","$trunc","$type","$unsetField","$week","$year","$zip"]
 
 def main(argv):
     parser=argparse.ArgumentParser()
@@ -66,12 +78,12 @@ def generate_report(supported_dictionary,not_supported_dictionary):
         
 
 
-        f.write("List of supported Aggregation opperators and the number of time it appears: \n")
+        f.write("List of supported Agregation opperators and the number of times it appears: \n")
         f.write("********************************************************************************" +"\n")
         f.write(str(supported_dictionary)+"\n\n\n")
         
 
-        f.write("List of NOT supported Aggregation opperators and the number of time it appears: \n" )
+        f.write("List of NOT supported Agregation opperators and the number of times it appears: \n" )
         f.write("********************************************************************************" +"\n")
         
         f.write(str(not_supported_dictionary)+"\n\n\n")

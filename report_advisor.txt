@@ -1,18 +1,18 @@
 Report Summary: 
 *****************************
-Your application is: 86% compatible with MongoDB API
-Total Aggregation Pipelines found: 21
+Your application is: 100% compatible with MongoDB API
+Total Aggregation Pipelines found: 18
 Total Supported Aggregation Pipelines: 18
-Total Not Supported Aggregation Pipelines: 3
+Total Not Supported Aggregation Pipelines: 0
 
 
-List of supported Aggregation opperators and the number of time it appears: 
+List of supported Agregation opperators and the number of times it appears: 
 ********************************************************************************
 {'$gt': 6, '$and': 4, '$lt': 8}
 
 
-List of NOT supported Aggregation opperators and the number of time it appears: 
+List of NOT supported Agregation opperators and the number of times it appears: 
 ********************************************************************************
-{'$set': 3}
+{}
 
 
