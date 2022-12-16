@@ -1,18 +1,24 @@
 Report Summary: 
 *****************************
-Your application is: 100% compatible with MongoDB API
-Total Aggregation Pipelines found: 21
-Total Supported Aggregation Pipelines: 21
-Total Not Supported Aggregation Pipelines: 0
+Your application is: 86% compatible with MongoDB API
+Total Aggregation Pipelines found: 22
+Total Supported Aggregation Pipelines: 19
+Total Not Supported Aggregation Pipelines: 3
 
 
 List of supported Agregation opperators and the number of times it appears: 
 ********************************************************************************
-{'$gt': 6, '$and': 4, '$lt': 8, '$set': 3}
+{'$and': 1, '$ne': 1, '$exists': 1, '$not': 1, '$regex': 1, '$push': 4, '$each': 2, '$slice': 2, '$set': 5, '$lt': 1}
 
 
 List of NOT supported Agregation opperators and the number of times it appears: 
 ********************************************************************************
-{}
+{'$addFields': 1, '$add': 1, '$sum': 1}
 
 
+Summary of transactions found : 
+*******************************
+Query operations using find: 3
+Delete operations : 1
+Update operations : 4
+Aggregate operations : 1

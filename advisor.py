@@ -2,7 +2,7 @@ import argparse
 import sys
 
 supported_keywords = ["$gt","$gte","$lt","$and","$not","$or","$nor","$ne","$eq","$in","$lte","$nin","$exists","$type","$regex","$text","$near","$nearSphere","$size","$natural","$inc","$min","$max",
-                        "$rename","$set","$addToSet","$pop","$pull","$push","$pullAll","$each","$position","$sort","$bit","$count","$limit","$match","$skip","$slice"]   
+                        "$rename","$set","$addToSet","$pop","$pull","$push","$pullAll","$each","$position","$sort","$bit","$count","$limit","$match","$skip","$slice",]   
 not_supported_keywords=["$expr","$jsonSchema","$mod","$geoIntersects","$geoWithin","$box","$center","$centerSphere","$maxDistance","$minDistance","$polygon","$all","$bitsAllClear","$bitsAllSet","$bitsANyClear",
                         "$bitsAnySet","$elemMatch","$rand","$currentData","$mul","$setOnInsert","$abs","$accumulator","$acos","$acosh","$addFields","$bucket","$bucketAuto","$changeStream","$collStats"
                         ,"$currentOp","$densify","$documents","$facet","$fill","$geoNear","$graphLookup","$group","$indexStats","$lookup","$merge","$out","$project","$redact","$replaceRoot","$replaceWith","$sample"
@@ -16,6 +16,8 @@ not_supported_keywords=["$expr","$jsonSchema","$mod","$geoIntersects","$geoWithi
                         ,"$sortArray","$split","$sqrt","$stsDevPop","$stsDevSamp","$strLenBytes","$strcasecmp","$strLenCP","$substr","$substrCP","$subtract","$sum","$switch","$tan","$tanh","$toBool","$toDate"
                         ,"$toDecimal","$toDouble","$toInt","$toLong","$toObjectId","$top","$topN","$toString","$toLower","$toUpper","$tsIncrement","$tsSecond","$trim","$trunc","$unsetField","$week","$year","$zip"]
 
+operations=["\"command\":{\"find\"","\"command\":{\"update\"","\"command\":{\"insert\"","\"command\":{\"delete\"","\"command\":{\"aggregate\""]
+
 def main(argv):
     parser=argparse.ArgumentParser()
     parser.add_argument("--file",dest="file",help="Set the MongoDB log file to analyze")
@@ -26,8 +28,8 @@ def main(argv):
         parser.error("--file is required")
 
     mongo_log = read_log(argv.file)
-    supported_dictionary,not_supported_dictionary = search(mongo_log)
-    generate_report(supported_dictionary,not_supported_dictionary)
+    supported_dictionary,not_supported_dictionary,operation_dictionary = search(mongo_log)
+    generate_report(supported_dictionary,not_supported_dictionary,operation_dictionary)
 
 
 def read_log(file):
@@ -40,6 +42,7 @@ def search(input_file):
 
     supported_dictionary = dict()
     not_supported_dictionary = dict()
+    operation_dictionary=dict()
 
     for line in input_file:
         for keyword in supported_keywords:
@@ -56,13 +59,20 @@ def search(input_file):
                 else:
                    not_supported_dictionary[keyword]+=1
 
+        for keyword in operations:
+            if keyword in line:
+                if not keyword in operation_dictionary:
+                   operation_dictionary[keyword]=1
+                else:
+                   operation_dictionary[keyword]+=1
 
-    return supported_dictionary,not_supported_dictionary
+
+    return supported_dictionary,not_supported_dictionary,operation_dictionary
 
 
 
 
-def generate_report(supported_dictionary,not_supported_dictionary):
+def generate_report(supported_dictionary,not_supported_dictionary,operations_dictionary):
     total= sum(supported_dictionary.values()) + sum(not_supported_dictionary.values())
     total_supported=sum(supported_dictionary.values())
     total_not_supported=sum(not_supported_dictionary.values())
@@ -90,6 +100,25 @@ def generate_report(supported_dictionary,not_supported_dictionary):
         f.write("********************************************************************************" +"\n")
         
         f.write(str(not_supported_dictionary)+"\n\n\n")
+
+        f.write("Summary of transactions found : \n" )
+        f.write("*******************************" +"\n")
+        if '\"command\":{\"find\"' in operations_dictionary: 
+            f.write("Query operations using find: "+str(operations_dictionary["\"command\":{\"find\""])+"\n")
+
+        if '\"command\":{\"delete\"' in operations_dictionary:    
+            f.write("Delete operations : "+str(operations_dictionary["\"command\":{\"delete\""])+"\n")
+
+
+        if '\"command\":{\"insert\"' in operations_dictionary: 
+            f.write("Insert operations : "+str(operations_dictionary["\"command\":{\"insert\""])+"\n")
+        
+        if '\"command\":{\"update\"' in operations_dictionary:
+            f.write("Update operations : "+str(operations_dictionary["\"command\":{\"update\""])+"\n")
+        
+        if "\"command\":{\"aggregate\"" in operations_dictionary:
+            f.write("Aggregate operations : "+str(operations_dictionary["\"command\":{\"aggregate\""])+"\n")
+        
         #w.writerows(output_dict.items())
 
 
