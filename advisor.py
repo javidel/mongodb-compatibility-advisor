@@ -1,20 +1,20 @@
 import argparse
 import sys
 
-supported_keywords = ["$gt","$gte","$lt","$and","$not","$or","$nor","$ne","$eq","$in","$lte","$nin","$exists","$type","$regex","$text","$near","$nearSphere","$elemMatch","$size","$natural","$inc","$min","$max",
-                        "$rename","$set","$unset","$addToSet","$pop","$pull","$push","$pullAll","$each","$position","$sort","$bit","$count","$limit","$match","$skip"]   
+supported_keywords = ["$gt","$gte","$lt","$and","$not","$or","$nor","$ne","$eq","$in","$lte","$nin","$exists","$type","$regex","$text","$near","$nearSphere","$size","$natural","$inc","$min","$max",
+                        "$rename","$set","$addToSet","$pop","$pull","$push","$pullAll","$each","$position","$sort","$bit","$count","$limit","$match","$skip","$slice"]   
 not_supported_keywords=["$expr","$jsonSchema","$mod","$geoIntersects","$geoWithin","$box","$center","$centerSphere","$maxDistance","$minDistance","$polygon","$all","$bitsAllClear","$bitsAllSet","$bitsANyClear",
-                        "$bitsAnySet","$elemMatch","$slice","$rand","$currentData","$mul","$setOnInsert","$abs","$accumulator","$acos","$acosh","$addFields","$bucket","$bucketAuto","$changeStream","$collStats"
+                        "$bitsAnySet","$elemMatch","$rand","$currentData","$mul","$setOnInsert","$abs","$accumulator","$acos","$acosh","$addFields","$bucket","$bucketAuto","$changeStream","$collStats"
                         ,"$currentOp","$densify","$documents","$facet","$fill","$geoNear","$graphLookup","$group","$indexStats","$lookup","$merge","$out","$project","$redact","$replaceRoot","$replaceWith","$sample"
-                        ,"$search","$searchMeta","$set","$setWindowFields","$sortByCount","$unionWith","$unset","$unwind","$add","$allElementsTrue","$anyElementTrue","$arrayElemAt","$arrayToObject","$asin","$asinh"
-                        ,"$atan","$atan2","$atanh","$avg","$binarySize","$bottom","$bottomN","$bsonSize","$ceil","$cmp","$concat","$concatArrays","$cond","$convert","$cosh","$cosh","$count","$covariancePop","$covarianceSamp"
+                        ,"$search","$searchMeta","$setWindowFields","$sortByCount","$unionWith","$unset","$unwind","$add","$allElementsTrue","$anyElementTrue","$arrayElemAt","$arrayToObject","$asin","$asinh"
+                        ,"$atan","$atan2","$atanh","$avg","$binarySize","$bottom","$bottomN","$bsonSize","$ceil","$cmp","$concat","$concatArrays","$cond","$convert","$cosh","$cosh","$covariancePop","$covarianceSamp"
                         ,"$dateAdd","$dateDiff","$dateFromParts","$dateFromString","$datesubtract","$dateToParts","$dateToString","$dateTrunc","$dayOfMonth","$dayOfWeek","$dayOfYear","$degreesToRadians","$denseRank"
                         ,"$derivative","$divide","$documentNumber","$exp","$expMovingAvg","$filter","$first","$firstN","$floor","$function","$getField","$hour","$ifNull","$indexOfArray","$indexOfBytes","$indexOfCP"
                         ,"$integral","$isArray","$isNumber","$isoDayOfWeek","$isoWeek","$isoWeekYear","$last","$lastN","$let","$linearFill","$literal","$ln","$log","$log10","$ltrim","$map","$maxN","$mergeObjects"
                         ,"$meta","$minN","$millisecond","$minute","$month","$multiply","$objectToArray","$pow","$radiansToDegrees","$range","$rank","$reduce","$regexFind","$regexFindAll","$regexMatch","$replaceOne"
-                        ,"$replaceAll","$reverseArray","$round","$rtrim","$sampleRate","$second","$setDifference","$setEquals","$setField","$setIntersection","$setIsSubset","$setUnion","$shift","$size","$sin","$sinh"
+                        ,"$replaceAll","$reverseArray","$round","$rtrim","$sampleRate","$second","$setDifference","$setEquals","$setField","$setIntersection","$setIsSubset","$setUnion","$shift","$sin","$sinh"
                         ,"$sortArray","$split","$sqrt","$stsDevPop","$stsDevSamp","$strLenBytes","$strcasecmp","$strLenCP","$substr","$substrCP","$subtract","$sum","$switch","$tan","$tanh","$toBool","$toDate"
-                        ,"$toDecimal","$toDouble","$toInt","$toLong","$toObjectId","$top","$topN","$toString","$toLower","$toUpper","$tsIncrement","$tsSecond","$trim","$trunc","$type","$unsetField","$week","$year","$zip"]
+                        ,"$toDecimal","$toDouble","$toInt","$toLong","$toObjectId","$top","$topN","$toString","$toLower","$toUpper","$tsIncrement","$tsSecond","$trim","$trunc","$unsetField","$week","$year","$zip"]
 
 def main(argv):
     parser=argparse.ArgumentParser()
@@ -43,18 +43,18 @@ def search(input_file):
 
     for line in input_file:
         for keyword in supported_keywords:
-            if keyword.lower() in line:
+            if keyword in line:
                 if not keyword in supported_dictionary:
-                   supported_dictionary[keyword.lower()]=1
+                   supported_dictionary[keyword]=1
                 else:
-                   supported_dictionary[keyword.lower()]+=1
+                   supported_dictionary[keyword]+=1
 
         for keyword in not_supported_keywords:
-            if keyword.lower() in line:
+            if keyword in line:
                 if not keyword in not_supported_dictionary:
-                   not_supported_dictionary[keyword.lower()]=1
+                   not_supported_dictionary[keyword]=1
                 else:
-                   not_supported_dictionary[keyword.lower()]+=1
+                   not_supported_dictionary[keyword]+=1
 
 
     return supported_dictionary,not_supported_dictionary
@@ -66,7 +66,10 @@ def generate_report(supported_dictionary,not_supported_dictionary):
     total= sum(supported_dictionary.values()) + sum(not_supported_dictionary.values())
     total_supported=sum(supported_dictionary.values())
     total_not_supported=sum(not_supported_dictionary.values())
-    perc=round(total_supported/total*100)
+    if total==0:
+        perc=0
+    else:
+        perc=round(total_supported/total*100)
     
     with open('report_advisor.txt','w') as f: 
         f.write("Report Summary: " +"\n")
