@@ -17,3 +17,5 @@ You need to enable the logging in the MongoDB by running the following command. 
 ```
 db.setProfilingLevel(0, -1)
 ```
+
+The script generates a report in a file called report_advisor.txt
