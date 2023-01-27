@@ -1,24 +1,38 @@
 Report Summary: 
 *****************************
-Your application is: 86% compatible with MongoDB API
-Total Aggregation Pipelines found: 22
-Total Supported Aggregation Pipelines: 19
-Total Not Supported Aggregation Pipelines: 3
+Your application is: 98.5% compatible with MongoDB API
 
 
-List of supported Agregation opperators and the number of times it appears: 
+Summary of aggregation operators found: your operators are 100% compatible with MongoDB API 
+****************************************************************************************************
+ - Total Aggregation Pipelines found: 68
+ - Total Supported Aggregation Pipelines: 68
+ - Total Not Supported Aggregation Pipelines: 0
+
+
+List of supported aggregation operators and the number of times it appears: 
 ********************************************************************************
-{'$and': 1, '$ne': 1, '$exists': 1, '$not': 1, '$regex': 1, '$push': 4, '$each': 2, '$slice': 2, '$set': 5, '$lt': 1}
+{'$gt': 1, '$in': 5, '$inc': 5, '$set': 10, '$lt': 47}
 
 
-List of NOT supported Agregation opperators and the number of times it appears: 
+List of NOT supported aggregation operators and the number of times it appears: 
 ********************************************************************************
-{'$addFields': 1, '$add': 1, '$sum': 1}
+{}
 
 
-Summary of transactions found : 
-*******************************
-Query operations using find: 3
-Delete operations : 1
-Update operations : 4
-Aggregate operations : 1
+Summary of operations found: your operations are 97% compatible with MongoDB API 
+*************************************************************************************
+ - Query operations using find: 52
+ - Delete operations : 4
+ - Insert operations : 2
+ - Update operations : 4
+ - findAndModify operations : 5
+ - getMore operations : 8
+ - mapReduce operations** : 2
+
+
+
+ ** Operations not supported.
+
+
+

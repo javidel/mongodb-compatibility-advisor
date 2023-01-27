@@ -16,7 +16,7 @@ not_supported_keywords=["$expr","$jsonSchema","$mod","$geoIntersects","$geoWithi
                         ,"$sortArray","$split","$sqrt","$stsDevPop","$stsDevSamp","$strLenBytes","$strcasecmp","$strLenCP","$substr","$substrCP","$subtract","$sum","$switch","$tan","$tanh","$toBool","$toDate"
                         ,"$toDecimal","$toDouble","$toInt","$toLong","$toObjectId","$top","$topN","$toString","$toLower","$toUpper","$tsIncrement","$tsSecond","$trim","$trunc","$unsetField","$week","$year","$zip"]
 
-operations=["\"command\":{\"find\"","\"command\":{\"update\"","\"command\":{\"insert\"","\"command\":{\"delete\"","\"command\":{\"aggregate\""]
+operations=["\"command\":{\"find\"","\"command\":{\"update\"","\"command\":{\"insert\"","\"command\":{\"delete\"","\"command\":{\"aggregate\"","\"command\":{\"mapReduce\"","\"command\":{\"getMore\"","\"command\":{\"findAndModify\""]
 
 def main(argv):
     parser=argparse.ArgumentParser()
@@ -73,6 +73,8 @@ def search(input_file):
 
 
 def generate_report(supported_dictionary,not_supported_dictionary,operations_dictionary):
+
+    #Calculate aggregation pipelines perc
     total= sum(supported_dictionary.values()) + sum(not_supported_dictionary.values())
     total_supported=sum(supported_dictionary.values())
     total_not_supported=sum(not_supported_dictionary.values())
@@ -80,46 +82,74 @@ def generate_report(supported_dictionary,not_supported_dictionary,operations_dic
         perc=0
     else:
         perc=round(total_supported/total*100)
-    
+
+    #Calculate operations perc
+    total_operations=sum(operations_dictionary.values())
+    supported_operations=operations_dictionary["\"command\":{\"find\""] + operations_dictionary["\"command\":{\"delete\""] + operations_dictionary["\"command\":{\"insert\""] + operations_dictionary["\"command\":{\"update\""] + operations_dictionary["\"command\":{\"findAndModify\""] + operations_dictionary["\"command\":{\"getMore\""]
+    if total_operations==0:
+        perc_operations=0
+    else:
+        perc_operations=round(supported_operations/total_operations*100)
+
+    #Calculate overall compatibility per
+    overall_supported=(perc + perc_operations)/2
+
+
     with open('report_advisor.txt','w') as f: 
         f.write("Report Summary: " +"\n")
         f.write("*****************************" +"\n")
-        f.write("Your application is: " + str(perc)+"% compatible with MongoDB API\n")
-        f.write("Total Aggregation Pipelines found: " + str(total)+"\n")
-        f.write("Total Supported Aggregation Pipelines: " + str(total_supported)+"\n")
-        f.write("Total Not Supported Aggregation Pipelines: " + str(total_not_supported)+"\n\n\n")
+        f.write("Your application is: " + str(overall_supported)+"% compatible with MongoDB API\n\n\n")
+
+
+        f.write("Summary of aggregation operators found: your operators are " + str(perc)+"% compatible with MongoDB API \n" )
+        f.write("****************************************************************************************************" +"\n")
+
+        f.write(" - Total Aggregation Pipelines found: " + str(total)+"\n")
+        f.write(" - Total Supported Aggregation Pipelines: " + str(total_supported)+"\n")
+        f.write(" - Total Not Supported Aggregation Pipelines: " + str(total_not_supported)+"\n\n\n")
         
 
 
-        f.write("List of supported Agregation opperators and the number of times it appears: \n")
+        f.write("List of supported aggregation operators and the number of times it appears: \n")
         f.write("********************************************************************************" +"\n")
         f.write(str(supported_dictionary)+"\n\n\n")
         
 
-        f.write("List of NOT supported Agregation opperators and the number of times it appears: \n" )
+        f.write("List of NOT supported aggregation operators and the number of times it appears: \n" )
         f.write("********************************************************************************" +"\n")
         
         f.write(str(not_supported_dictionary)+"\n\n\n")
 
-        f.write("Summary of transactions found : \n" )
-        f.write("*******************************" +"\n")
+        f.write("Summary of operations found: your operations are " + str(perc_operations)+"% compatible with MongoDB API \n" )
+        f.write("*************************************************************************************" +"\n")
+
+        
         if '\"command\":{\"find\"' in operations_dictionary: 
-            f.write("Query operations using find: "+str(operations_dictionary["\"command\":{\"find\""])+"\n")
+            f.write(" - Query operations using find: "+str(operations_dictionary["\"command\":{\"find\""])+"\n")
 
         if '\"command\":{\"delete\"' in operations_dictionary:    
-            f.write("Delete operations : "+str(operations_dictionary["\"command\":{\"delete\""])+"\n")
+            f.write(" - Delete operations : "+str(operations_dictionary["\"command\":{\"delete\""])+"\n")
 
 
         if '\"command\":{\"insert\"' in operations_dictionary: 
-            f.write("Insert operations : "+str(operations_dictionary["\"command\":{\"insert\""])+"\n")
+            f.write(" - Insert operations : "+str(operations_dictionary["\"command\":{\"insert\""])+"\n")
         
         if '\"command\":{\"update\"' in operations_dictionary:
-            f.write("Update operations : "+str(operations_dictionary["\"command\":{\"update\""])+"\n")
+            f.write(" - Update operations : "+str(operations_dictionary["\"command\":{\"update\""])+"\n")
+
+        if '\"command\":{\"findAndModify\"' in operations_dictionary:
+            f.write(" - findAndModify operations : "+str(operations_dictionary["\"command\":{\"findAndModify\""])+"\n")
+        
+        if '\"command\":{\"getMore\"' in operations_dictionary:
+            f.write(" - getMore operations : "+str(operations_dictionary["\"command\":{\"getMore\""])+"\n")
         
         if "\"command\":{\"aggregate\"" in operations_dictionary:
-            f.write("Aggregate operations : "+str(operations_dictionary["\"command\":{\"aggregate\""])+"\n")
+            f.write(" - Aggregate operations** : "+str(operations_dictionary["\"command\":{\"aggregate\""])+"\n")
         
-        #w.writerows(output_dict.items())
+        if "\"command\":{\"mapReduce\"" in operations_dictionary:
+            f.write(" - mapReduce operations** : "+str(operations_dictionary["\"command\":{\"mapReduce\""])+"\n"+"\n"+"\n"+"\n")
+
+        f.write(" ** Operations not supported."+"\n"+"\n"+"\n"+"\n")
 
 
 if __name__ == "__main__":
