@@ -84,8 +84,18 @@ def generate_report(supported_dictionary,not_supported_dictionary,operations_dic
         perc=round(total_supported/total*100)
 
     #Calculate operations perc
-    total_operations=sum(operations_dictionary.values())
-    supported_operations=operations_dictionary["\"command\":{\"find\""] + operations_dictionary["\"command\":{\"delete\""] + operations_dictionary["\"command\":{\"insert\""] + operations_dictionary["\"command\":{\"update\""] + operations_dictionary["\"command\":{\"findAndModify\""] + operations_dictionary["\"command\":{\"getMore\""]
+    total_operations=sum(operations_dictionary.values()) 
+
+    supp_find=operations_dictionary["\"command\":{\"find\""] if "\"command\":{\"find\"" in operations_dictionary else 0
+    supp_delete=operations_dictionary["\"command\":{\"delete\""] if "\"command\":{\"delete\"" in operations_dictionary else 0
+    supp_insert=operations_dictionary["\"command\":{\"insert\""] if "\"command\":{\"insert\"" in operations_dictionary else 0
+    supp_update=operations_dictionary["\"command\":{\"update\""] if "\"command\":{\"update\"" in operations_dictionary else 0
+    supp_findAndModify=operations_dictionary["\"command\":{\"findAndModify\""] if "\"command\":{\"findAndModify\"" in operations_dictionary else 0
+    supp_getMore=operations_dictionary["\"command\":{\"getMore\""] if "\"command\":{\"getMore\"" in operations_dictionary else 0
+
+    supported_operations=supp_find + supp_delete + supp_insert + supp_update + supp_findAndModify + supp_getMore
+    
+    
     if total_operations==0:
         perc_operations=0
     else:
@@ -149,7 +159,8 @@ def generate_report(supported_dictionary,not_supported_dictionary,operations_dic
         if "\"command\":{\"mapReduce\"" in operations_dictionary:
             f.write(" - mapReduce operations** : "+str(operations_dictionary["\"command\":{\"mapReduce\""])+"\n"+"\n"+"\n"+"\n")
 
-        f.write(" ** Operations not supported."+"\n"+"\n"+"\n"+"\n")
+        f.write("\n"+"\n"+ " ** Operations not supported.\n")
+        f.write(" Insert and updates could not be accurate number as appears more in the log."+"\n"+"\n"+"\n"+"\n")
 
 
 if __name__ == "__main__":

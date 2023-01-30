@@ -32,7 +32,10 @@ Summary of operations found: your operations are 97% compatible with MongoDB API
 
 
 
+
+
  ** Operations not supported.
+ Insert and updates could not be accurate number as appears more in the log.
 
 
 
