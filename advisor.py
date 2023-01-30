@@ -102,7 +102,11 @@ def generate_report(supported_dictionary,not_supported_dictionary,operations_dic
         perc_operations=round(supported_operations/total_operations*100)
 
     #Calculate overall compatibility per
-    overall_supported=(perc + perc_operations)/2
+
+    if(perc_operations)==0:
+        overall_supported=0
+    else:
+        overall_supported=(perc + perc_operations)/2
 
 
     with open('report_advisor.txt','w') as f: 
